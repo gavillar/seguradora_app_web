@@ -1,0 +1,1 @@
+# seguradora_app_web
