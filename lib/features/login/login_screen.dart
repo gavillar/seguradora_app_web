@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:seguro_app/features/home/home_screen.dart';
 import 'package:seguro_app/core/widgets/brand_logo.dart';
+import 'package:seguro_app/features/login/data/user_repository.dart';
 import 'package:seguro_app/features/login/widgets/login_background.dart';
 import 'package:seguro_app/features/login/widgets/login_form_card.dart';
 import 'package:seguro_app/features/login/widgets/login_header.dart';
@@ -18,11 +19,34 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   late bool _registerMode;
-
+  final _userRepository = UserRepository();
   @override
   void initState() {
     super.initState();
     _registerMode = widget.registerMode;
+  }
+
+  void _handleLoginSubmit(String cpf, String password, bool registerMode) {
+    if (registerMode) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Cadastro demonstrativo.')));
+      return;
+    }
+
+    final user = _userRepository.authenticate(cpf: cpf, password: password);
+
+    if (user == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('CPF ou senha incorretos.')));
+      return;
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => HomeScreen(userName: user.name)),
+    );
   }
 
   @override
@@ -36,8 +60,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: const EdgeInsets.only(bottom: 24),
                 child: Center(
                   child: ConstrainedBox(
-                    // Limita a largura do conjunto no Web.
-                    // No mobile, mantém a largura disponível atual.
                     constraints: BoxConstraints(
                       maxWidth: kIsWeb ? 460 : constraints.maxWidth,
                     ),
@@ -60,15 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onModeChanged: (value) {
                               setState(() => _registerMode = value);
                             },
-                            onSubmit: (cpf, password, isRegistering) {
-                              if (isRegistering) return;
-
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (_) => const HomeScreen(),
-                                ),
-                              );
-                            },
+                            onSubmit: _handleLoginSubmit,
                           ),
                           const SizedBox(height: 30),
                           const SocialLoginFooter(),
