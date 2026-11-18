@@ -41,3 +41,8 @@ flutter devices
 
 Escolha:
 flutter run -d chrome
+
+LOGIN e authenticação devem utilizar este usuário.
+CPF: 529.982.247.25
+Senha: Tokyomarine10
+User: João da Silva
