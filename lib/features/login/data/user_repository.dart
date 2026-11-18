@@ -2,7 +2,11 @@ import 'package:seguro_app/core/models/user_model.dart';
 
 class UserRepository {
   static const _users = [
-    UserModel(cpf: '52998224725', name: 'João da Silva', password: 'Tokyomarine10#'),
+    UserModel(
+      cpf: '52998224725',
+      name: 'João da Silva',
+      password: 'Seguradora123#',
+    ),
   ];
 
   UserModel? findByCpf(String cpf) {
